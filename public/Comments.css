@@ -1,0 +1,466 @@
+/* Define some basic colors */
+:root {
+  --primary-bg: #0d0d0d; /* Very dark background, almost black */
+  --secondary-bg: #1f1f1f; /* Darker grey for comment boxes and inputs */
+  --text-color: #e0e0e0; /* Light grey text for better readability */
+  --accent-color: var(
+    --primario-crunchyroll,
+    #ff640a
+  ); /* Orange accent from colors.css */
+  --border-color: #333333; /* Subtle border color */
+  --button-bg: var(--accent-color);
+  --button-text: #ffffff; /* White text on buttons */
+  --input-bg: var(--secondary-bg);
+  --input-border: var(--border-color);
+  --input-text: var(--text-color);
+  --danger-color: var(--accent-color); /* Orange for delete button */
+  --danger-text-color: #ffffff;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Main container styling */
+.comments-container {
+  background-color: var(--primary-bg);
+  color: var(--text-color);
+  padding: 25px;
+  margin: 20px auto;
+  max-width: 700px; /* Adjusted width */
+  border-radius: 10px; /* Slightly more rounded corners */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  text-align: left; /* Align text to the left for content */
+}
+
+.comments-container h2 {
+  color: var(--accent-color);
+  margin-bottom: 25px;
+  text-align: center; /* Center the main title */
+  font-size: 24px;
+}
+
+/* Registration section styling */
+.register-section {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Make input and button full width within their container */
+  gap: 10px;
+  padding: 15px;
+  background-color: var(--secondary-bg);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+}
+
+.username-input {
+  padding: 12px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.username-input::placeholder {
+  color: #888;
+}
+
+.register-button {
+  padding: 12px 20px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.register-button:hover {
+  background-color: darken(var(--button-bg), 10%);
+  transform: translateY(-1px);
+}
+
+/* Comments list styling */
+.comments-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 0; /* Removed top margin as title has bottom margin */
+}
+
+.comment-item {
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px; /* Keep existing margin */
+  margin-top: 10px; /* Add margin-top to separate from potential delete button of comment above */
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: calc(0.05s * var(--comment-index, 0));
+  position: relative; /* Ensure this is relative for absolute positioning of children */
+  overflow: visible; /* Ensure delete button isn't clipped if it extends slightly */
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Align items to the start for better layout with multi-line text */
+  margin-bottom: 8px;
+  /* Removed padding-right as delete button is now out of flow */
+  box-sizing: border-box;
+}
+
+.comment-user {
+  color: var(--accent-color);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.comment-date {
+  color: #aaaaaa; /* Lighter grey for date */
+  font-size: 12px;
+}
+
+.comment-text {
+  color: var(--text-color);
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap; /* Preserve line breaks in comments */
+  /* padding-right: 35px; Remove previous padding, not needed for bottom-right button */
+}
+
+.delete-button {
+  background-color: var(--danger-color);
+  color: var(--danger-text-color);
+  border: 2px solid var(--primary-bg); /* Add a border to make it pop from the comment box */
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 10; /* Ensure it's above the comment item */
+}
+
+.delete-button:hover {
+  background-color: darken(var(--danger-color), 15%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.no-comments-message {
+  color: #aaaaaa;
+  font-style: italic;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Add comment section styling */
+.add-comment-section {
+  margin-top: 25px;
+  padding: 15px;
+  background-color: var(--secondary-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border-radius: 6px;
+  font-size: 15px;
+  resize: vertical; /* Allow vertical resize */
+  box-sizing: border-box;
+}
+
+.comment-textarea::placeholder {
+  color: #888;
+}
+
+.send-button {
+  align-self: flex-end; /* Align button to the right */
+  padding: 10px 25px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.send-button:hover {
+  background-color: darken(var(--button-bg), 10%);
+  transform: translateY(-1px);
+}
+
+/* Feedback Message Styling */
+.feedback-message {
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.feedback-message.success {
+  background-color: #4caf50; /* Green for success */
+  color: white;
+}
+
+.feedback-message.error {
+  background-color: #f44336; /* Red for error */
+  color: white;
+}
+
+/* Toast Notification Styling */
+.toast-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  z-index: 1000; /* Ensure it's above other content */
+  animation: slideInFadeOut 3s ease-in-out forwards; /* 0.3s slide in, 2.4s stay, 0.3s fade out */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.toast-notification.success {
+  background-color: var(--accent-color); /* Crunchyroll orange for success */
+}
+
+.toast-notification.error {
+  background-color: var(--accent-color); /* Crunchyroll orange for error */
+}
+
+@keyframes slideInFadeOut {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  10% {
+    /* Slide in fast */
+    transform: translateX(0);
+    opacity: 1;
+  }
+  90% {
+    /* Stay visible */
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    /* Fade out */
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
+
+/* Loading Spinner Animations */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-small {
+  display: inline-block;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  width: 16px;
+  height: 16px;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner-large {
+  display: block;
+  margin: 20px auto;
+  border: 5px solid rgba(var(--text-color-rgb, 224, 224, 224), 0.3); /* Use text color with opacity */
+  border-radius: 50%;
+  border-top-color: var(--accent-color); /* Accent color for spinner */
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+.loading-comments-section {
+  text-align: center;
+  padding: 30px 0;
+  color: var(--text-color);
+}
+
+.loading-comments-section p {
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Ensure buttons with spinners maintain layout */
+.register-button,
+.send-button,
+.delete-button {
+  position: relative; /* Needed if spinner is absolutely positioned inside, or to ensure consistent height */
+  display: inline-flex; /* Helps center spinner if it's a direct child */
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-button .spinner-small {
+  border-top-color: var(
+    --danger-text-color
+  ); /* Match delete button text color */
+}
+
+/* Disabled state for inputs and buttons */
+.username-input:disabled,
+.comment-textarea:disabled {
+  background-color: #2a2a2a; /* Slightly different background when disabled */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.register-button:disabled,
+.send-button:disabled,
+.delete-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.register-button:disabled:hover,
+.send-button:disabled:hover,
+.delete-button:disabled:hover {
+  background-color: #555; /* Keep same color on hover when disabled */
+  transform: none; /* No transform on hover when disabled */
+}
+
+/* Basic responsive adjustments */
+@media (max-width: 600px) {
+  .comments-container {
+    margin: 10px;
+    padding: 15px;
+  }
+
+  .comments-container h2 {
+    font-size: 20px;
+  }
+
+  .comment-user {
+    font-size: 15px;
+  }
+  .comment-text {
+    font-size: 14px;
+  }
+  .comment-textarea,
+  .username-input {
+    font-size: 14px;
+  }
+  .send-button,
+  .register-button {
+    font-size: 15px;
+    padding: 10px 15px;
+  }
+  .delete-button {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+}
+
+/* Pagination Controls Styling */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px;
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap; /* Allow controls to wrap on smaller screens */
+}
+
+.page-numbers-container {
+  display: flex;
+  align-items: center;
+  margin: 0 5px; /* Adjust margin as needed */
+}
+
+.pagination-ellipsis {
+  padding: 6px 0px; /* Match padding of buttons for alignment */
+  margin: 0 2px; /* Minimal margin */
+  color: var(--text-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px; /* Give it some space */
+}
+
+.pagination-button {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin: 0 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.pagination-button.page-number-button {
+  padding: 6px 10px; /* Slightly smaller padding for page numbers */
+  min-width: 30px; /* Ensure a consistent width */
+  text-align: center;
+}
+
+.pagination-button.page-number-button.active {
+  background-color: var(
+    --secondary-bg
+  ); /* Different background for active page */
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  cursor: default;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: darken(var(--button-bg), 10%);
+}
+
+/* Helper function for darken, SCSS like. If not using SCSS, pre-calculate or use JS */
+/* For CSS, you'd manually pick a darker shade or use a filter if applicable,
+   but direct color functions like darken() aren't standard CSS yet.
+   The hover effects will use slightly darker fixed colors or rely on filter for simplicity if needed.
+   For this example, I'll assume the browser handles 'darken' or it's a placeholder for a pre-processor.
+   If not, replace 'darken(var(--button-bg), 10%)' with a specific darker hex/rgba value.
+   For instance, if --button-bg is #ff640a, a 10% darker might be around #e65a09.
+*/

@@ -1,0 +1,220 @@
+@keyframes fadeInSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) translateX(20px); /* Start slightly up and to the right */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
+}
+
+@keyframes fadeOutSlideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px) translateX(20px); /* Slide up and to the right */
+  }
+}
+
+.notification-container {
+  position: fixed;
+  top: 20px; /* Position of the container from the top */
+  right: 20px;
+  z-index: 1000;
+  width: 380px; /* Slightly wider for better content fit */
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Increased gap between notifications */
+}
+
+/* This makes the first notification appear lower */
+.notification-container .notification-item:first-child {
+  margin-top: 50px; /* Adds extra space above the first notification */
+}
+
+.notification-item {
+  background-color: #3a3a3a; /* Dark background for items */
+  color: #e0e0e0; /* Light text color for readability */
+  padding: 18px 22px; /* More spacious padding */
+  border-radius: 10px; /* Softer, more modern corners */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* Deeper shadow for dark mode */
+  border-left: 6px solid; /* Thicker, more prominent accent border */
+  animation: fadeInSlideDown 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out,
+    background-color 0.2s ease-out;
+  position: relative;
+}
+
+.notification-item.notification-item-closing {
+  animation: fadeOutSlideUp 0.3s cubic-bezier(0.75, 0.2, 0.75, 1) forwards;
+}
+
+.notification-item:hover {
+  transform: translateY(-3px) scale(1.01); /* Subtle lift and scale on hover */
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6); /* Enhanced shadow on hover */
+}
+
+/* Category-specific styling with subtle gradients */
+.notification-item.info {
+  border-left-color: #3498db; /* Vibrant Blue */
+  background-image: linear-gradient(
+    to right,
+    rgba(52, 152, 219, 0.08),
+    rgba(58, 58, 58, 0) 70%
+  );
+}
+.notification-item.info:hover {
+  border-left-color: #5dade2; /* Lighter blue on hover */
+}
+
+.notification-item.warning {
+  border-left-color: #f39c12; /* Bright Orange */
+  background-image: linear-gradient(
+    to right,
+    rgba(243, 156, 18, 0.08),
+    rgba(58, 58, 58, 0) 70%
+  );
+}
+.notification-item.warning:hover {
+  border-left-color: #e67e22; /* Slightly different orange on hover */
+}
+
+.notification-item.error {
+  border-left-color: #e74c3c; /* Strong Red */
+  background-image: linear-gradient(
+    to right,
+    rgba(231, 76, 60, 0.08),
+    rgba(58, 58, 58, 0) 70%
+  );
+}
+.notification-item.error:hover {
+  border-left-color: #c0392b; /* Darker red on hover */
+}
+
+.notification-item.default-category {
+  border-left-color: #95a5a6; /* Muted Grey */
+  background-image: linear-gradient(
+    to right,
+    rgba(149, 165, 166, 0.08),
+    rgba(58, 58, 58, 0) 70%
+  );
+}
+.notification-item.default-category:hover {
+  border-left-color: #bdc3c7; /* Lighter grey on hover */
+}
+
+.notification-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.notification-item-content {
+  flex-grow: 1;
+  padding-right: 10px; /* Ensure space for the close button */
+}
+
+.notification-item-title {
+  font-weight: 600; /* Bolder title */
+  margin-bottom: 8px;
+  display: block;
+  font-size: 1.15em; /* Larger title font */
+  color: #ffffff; /* Pure white for title emphasis */
+}
+
+.notification-item-body {
+  margin: 0;
+  font-size: 0.98em; /* Slightly larger body font */
+  line-height: 1.5;
+  color: #cccccc; /* Softer light grey for body text */
+}
+
+.notification-item-close-button {
+  background: transparent;
+  border: none;
+  color: #bdc3c7; /* Light grey for close icon */
+  font-size: 1.8em; /* Larger close icon for easier interaction */
+  line-height: 1; /* Better vertical alignment of the 'times' character */
+  cursor: pointer;
+  padding: 5px; /* Increased clickable area */
+  margin-left: 10px;
+  border-radius: 50%; /* Circular interactive feedback */
+  transition: color 0.2s ease, background-color 0.2s ease;
+  align-self: flex-start; /* Align to the top of the header */
+}
+
+.notification-item-close-button:hover {
+  color: #ffffff; /* White icon on hover */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.15
+  ); /* Subtle background highlight on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .notification-container {
+    width: 90%; /* Take more width on smaller screens */
+    right: 5%; /* Center it a bit */
+    left: 5%;
+    top: 10px;
+    gap: 10px;
+  }
+
+  .notification-item {
+    padding: 15px;
+    border-left-width: 5px;
+  }
+
+  .notification-item-title {
+    font-size: 1.05em;
+  }
+
+  .notification-item-body {
+    font-size: 0.9em;
+  }
+
+  .notification-item-close-button {
+    font-size: 1.6em;
+    padding: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-container {
+    width: 95%;
+    right: 2.5%;
+    left: 2.5%;
+    bottom: 10px; /* Position at the bottom for very small screens */
+    top: auto; /* Remove top positioning */
+    gap: 8px;
+  }
+
+  .notification-container .notification-item:first-child {
+    margin-top: 0; /* Reset margin for bottom positioning */
+  }
+
+  .notification-item {
+    padding: 12px 15px;
+    border-radius: 8px;
+  }
+
+  .notification-item-title {
+    font-size: 1em;
+  }
+
+  .notification-item-body {
+    font-size: 0.85em;
+  }
+
+  .notification-item-close-button {
+    font-size: 1.5em;
+  }
+}
