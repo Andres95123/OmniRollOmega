@@ -7,8 +7,6 @@ import { initCardsLangShow } from "./scripts/cardsLangShow";
 import { cleanSerieName } from "./utils/scrapping";
 import showNotifications from "./scripts/notifications";
 
-console.log("content.ts loaded");
-
 // See if the browser storage is set to clean
 browser.storage.local.get("clean").then((result) => {
   if (result.clean) {

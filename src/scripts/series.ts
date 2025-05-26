@@ -138,11 +138,8 @@ export async function updateSerie(url: string): Promise<void> {
 
 async function addFlags(serie: GetSerieResponse) {
   if (!serie.Dubs || serie.Dubs.length === 0) {
-    console.log("No tiene dubs, no se añade nada");
     return;
   }
-
-  console.log("addFlags", serie.Dubs);
 
   // Contenedor para las banderas
   const flagsContainer = document.createElement("div");
@@ -187,16 +184,11 @@ async function addFlags(serie: GetSerieResponse) {
 }
 
 export async function addBadge(serie: GetSerieResponse) {
-  console.log("addBadgeX", serie);
   // Mira si tiene tags, sino no hace nada
   if (!serie.Tags || serie.Tags.length === 0) {
-    console.log("No tiene tags, no se añade nada");
     return;
   }
 
-  console.log("addBadge", serie.Tags);
-
-  //   Si tiene tags, las añadimos al DOM
 
   // Search the bottom-actions-wrapper
   const bottomActionsWrapper = document.querySelector(
@@ -218,8 +210,6 @@ export async function addBadge(serie: GetSerieResponse) {
   serie.Tags.forEach((tag) => {
     // Create a dedicated div for each badge's React root
     const badgeElement = document.createElement("div");
-
-    console.log("badgeElement", badgeElement);
 
     // Create a root for this specific badge element
     const root = createRoot(badgeElement);

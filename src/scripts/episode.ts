@@ -57,10 +57,10 @@ async function uploadEpisode(episode_id: string) {
   // Envia el objeto a la API
   await updateEpisode(episodeUpdateRequest)
     .then((response) => {
-      console.log("Episodio actualizado:", response);
+      console.log("Episodie updated:", response);
     })
     .catch((error) => {
-      console.error("Error al actualizar el episodio:", error);
+      console.error("Error updating episode:", error);
     });
 }
 
