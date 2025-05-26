@@ -11,11 +11,13 @@
     "webNavigation",
     "storage",
     "{{firefox}}.*://*.crunchyroll.com/*",
-    "{{firefox}}.https://jealous-camel-darkdev-367363e8.koyeb.app/*"
+    "{{firefox}}.*://*.koyeb.app/*",
+    "{{firefox}}.*://*.anilist.co/*"
   ],
   "{{chrome}}.host_permissions": [
     "*://*.crunchyroll.com/*",
-    "https://jealous-camel-darkdev-367363e8.koyeb.app/*"
+    "*://*.koyeb.app/*",
+    "*://*.anilist.co/*"
   ],
   "icons": {
     "16": "icon/16.png",
