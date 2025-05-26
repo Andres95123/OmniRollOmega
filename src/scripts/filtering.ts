@@ -152,8 +152,23 @@ export async function startFiltering() {
     return;
   }
 
+  const classNameFiltering = "filtering-options";
+  // Check if the filtering options already exist
+  if (browseDropdowns.querySelector(`.${classNameFiltering}`)) {
+    // Remove existing filtering options
+    const existingFilterOptions = browseDropdowns.querySelector(
+      `.${classNameFiltering}`
+    );
+    if (existingFilterOptions) {
+      existingFilterOptions.remove();
+      console.log("Removed existing filtering options.");
+    } else {
+      console.warn("No existing filtering options found to remove.");
+    }
+  }
+
   const filterOptionsDiv = document.createElement("div");
-  filterOptionsDiv.className = "filtering-options";
+  filterOptionsDiv.className = classNameFiltering; // Add a class for styling
   // Añadimos como primer hijo de browseDropdowns
   browseDropdowns.insertAdjacentElement("afterbegin", filterOptionsDiv);
   const root = createRoot(filterOptionsDiv);

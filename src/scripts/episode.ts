@@ -70,9 +70,26 @@ function addComments(crunchy_id: string) {
     "erc-watch-episode-layout"
   )[0] as HTMLElement;
 
+  const container_class_name = ".comments-container";
+
+  // Search for the comment-container if it already exists
+  if (container.querySelector(container_class_name)) {
+    console.warn(
+      "Comments container already exists"
+    );
+
+    // Remove the existing comments container
+    const existingCommentsDiv = container.querySelector(
+      container_class_name
+    ) as HTMLDivElement;
+    if (existingCommentsDiv) {
+      existingCommentsDiv.remove();
+    }
+  }
+
   // Add a new div element to the container
   const commentsDiv = document.createElement("div");
-  commentsDiv.className = "comments-container"; // Add a class for styling
+  commentsDiv.className = container_class_name; // Add a class for styling
 
   //   Add the comments div to the container, at the end of the body
   container.appendChild(commentsDiv);

@@ -108,11 +108,14 @@ async function processAndDisplaySerieData(serie: SerieDTO): Promise<void> {
 
     // Update UI elements with server data
     // These functions can run concurrently as they modify different parts of the DOM
-    await Promise.all([
-      addBadge(serieServer),
-      addFlags(serieServer),
-      addAnilist(serieServer), // Assuming addAnilist is async or returns quickly
-    ]);
+    // If not charged
+    if (!document.body.hasAttribute("data-t=series-data-loaded")) {
+      await Promise.all([
+        addBadge(serieServer),
+        addFlags(serieServer),
+        addAnilist(serieServer), // Assuming addAnilist is async or returns quickly
+      ]);
+    }
   } catch (error) {
     console.error("Error processing series data from server:", error);
   }
@@ -245,6 +248,13 @@ export async function addBadge(serie: GetSerieResponse) {
     );
   } else {
     bottomActionsWrapper.appendChild(badgeContainer);
+  }
+
+  // Add to the body the charged data-t
+  const bodyElement = document.querySelector("body");
+  if (!bodyElement) {
+    console.error("Body element not found");
+    return;
   }
 }
 
