@@ -153,7 +153,6 @@ export function retrieve<T>(key: string): T | null {
           // Item has expired
           delete storageMap[key]; // Remove expired item
           saveStorageMap(storageMap); // Save the map without the expired item
-          console.log(`Item with key "${key}" expired and removed.`);
           return null;
         } else {
           // Item is valid and not expired

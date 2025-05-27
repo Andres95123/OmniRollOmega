@@ -10,7 +10,15 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dist-chrome
+dist-firefox
+dist-opera
 *.local
+
+# Distribution files
+OmniRoll-Chrome.zip
+OmniRoll-Firefox.zip
+OmniRoll-Opera.zip
 
 # Editor directories and files
 .vscode/*

@@ -19,11 +19,6 @@ import browser from "webextension-polyfill";
 // --- Configuration ---
 const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:8000"; // Fallback to localhost if not set
 
-// Log the server URL being used (only in development)
-if (import.meta.env.DEV) {
-  console.log("🔗 Server URL:", SERVER_URL);
-}
-
 // --- Interfaces ---
 interface Anime {
   title: string;
@@ -197,7 +192,6 @@ export async function getSeries(
     .map((id) => {
       const serieLocal = retrieve<GetSerieResponse>("serie_" + id);
       if (serieLocal) {
-        console.log("Serie found in local storage:", serieLocal, "ID:", id);
         return serieLocal;
       }
       // If serieLocal is not found, add the ID to unknown_ids
