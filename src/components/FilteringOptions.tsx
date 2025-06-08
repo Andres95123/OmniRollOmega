@@ -63,9 +63,9 @@ const FilteringOptions: React.FC<FilteringOptionsProps> = ({
     dubCode: "all",
     subCode: "all",
     isNew: false,
-    score: 0,
+    score: undefined, // Changed from 0 to undefined to indicate "no filter"
     rating: "all",
-    episodes: 0,
+    episodes: undefined, // Changed from 0 to undefined to indicate "no filter"
   });
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -174,21 +174,25 @@ const FilteringOptions: React.FC<FilteringOptionsProps> = ({
       label: "Only news",
     },
   ];
-
   const handleChange =
     (name: keyof FilterOptions) =>
     (
       e: ChangeEvent<HTMLSelectElement> | ChangeEvent<HTMLInputElement>
     ): void => {
       const target = e.target;
-      let value: string | number | boolean;
+      let value: string | number | boolean | undefined;
 
       if (target.type === "checkbox") {
         value = (target as HTMLInputElement).checked;
       } else if (target.type === "number") {
         const numValue = parseFloat(target.value);
-        // Store 0 if input is empty or not a valid number, aligning with initial state
-        value = target.value === "" ? 0 : isNaN(numValue) ? 0 : numValue;
+        // Store undefined if input is empty, or the number if valid
+        value =
+          target.value === ""
+            ? undefined
+            : isNaN(numValue)
+            ? undefined
+            : numValue;
       } else {
         value = target.value;
       }

@@ -137,14 +137,6 @@
   font-size: 12px;
 }
 
-.comment-text {
-  color: var(--text-color);
-  font-size: 15px;
-  line-height: 1.6;
-  white-space: pre-wrap; /* Preserve line breaks in comments */
-  /* padding-right: 35px; Remove previous padding, not needed for bottom-right button */
-}
-
 .delete-button {
   background-color: var(--danger-color);
   color: var(--danger-text-color);
@@ -196,6 +188,7 @@
   font-size: 15px;
   resize: vertical; /* Allow vertical resize */
   box-sizing: border-box;
+  margin-bottom: 0; /* Remove bottom margin since we now have comment-actions container */
 }
 
 .comment-textarea::placeholder {
@@ -213,6 +206,7 @@
   font-weight: bold;
   font-size: 16px;
   transition: background-color 0.2s ease, transform 0.1s ease;
+  flex-shrink: 0; /* Prevent button from shrinking */
 }
 
 .send-button:hover {
@@ -454,6 +448,103 @@
 
 .pagination-button:hover:not(:disabled) {
   background-color: darken(var(--button-bg), 10%);
+}
+
+/* Comment text styling - simple and cross-browser compatible */
+.comment-text {
+  margin: 10px 0;
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap; /* Preserve line breaks in comments */
+  color: var(--text-color);
+  font-size: 15px;
+}
+
+/* Read more/less button styling */
+.read-more-button {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-decoration: underline;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.read-more-button:hover {
+  background-color: var(--accent-color);
+  color: var(--button-text);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.read-more-button:active {
+  transform: translateY(0);
+}
+
+/* Mobile-friendly touch targets for read more button */
+@media (max-width: 600px) {
+  .read-more-button {
+    font-size: 14px;
+    padding: 6px 12px;
+    min-height: 32px; /* Minimum touch target size */
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* Comment Actions Container - Layout for read more (left) and delete (right) buttons */
+.comment-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  min-height: 32px; /* Ensure consistent height */
+}
+
+/* Fallback for browsers that don't support :has() */
+/* When only one child is present, the space-between will still work correctly */
+.comment-actions > *:only-child.read-more-button {
+  margin-right: auto; /* Push to the left when it's the only button */
+}
+
+.comment-actions > *:only-child.delete-button {
+  margin-left: auto; /* Push to the right when it's the only button */
+}
+
+/* Modern browsers with :has() support */
+@supports selector(:has(*)) {
+  /* When only read more button is present, align it to the left */
+  .comment-actions:has(.read-more-button):not(:has(.delete-button)) {
+    justify-content: flex-start;
+  }
+
+  /* When only delete button is present, align it to the right */
+  .comment-actions:has(.delete-button):not(:has(.read-more-button)) {
+    justify-content: flex-end;
+  }
+}
+
+/* Word Counter Styles */
+.word-counter {
+  display: flex;
+  align-items: center;
+}
+
+.word-count {
+  font-size: 12px;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.word-count-error {
+  font-size: 12px;
+  color: var(--danger-color);
+  font-weight: bold;
 }
 
 /* Helper function for darken, SCSS like. If not using SCSS, pre-calculate or use JS */

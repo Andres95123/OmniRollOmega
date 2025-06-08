@@ -40,12 +40,37 @@ const adaptAllComments = (
   return comments.map(adaptCommentCreationTime);
 };
 
+// Helper function to count words in a text
+const countWords = (text: string): number => {
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length > 0).length;
+};
+
+// Helper function to check if text needs truncation (more than 100 words)
+const needsTruncation = (text: string): boolean => {
+  return countWords(text) > 100;
+};
+
+// Helper function to truncate text to approximately 100 words
+const truncateText = (text: string): string => {
+  const words = text.trim().split(/\s+/);
+  if (words.length <= 100) {
+    return text;
+  }
+  return words.slice(0, 100).join(" ") + "...";
+};
+
 const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
   const [comments, setComments] = React.useState<EpisodeCommentsDTO[]>([]);
   const [newComment, setNewComment] = React.useState("");
   const [username, setUsername] = React.useState("");
   const [currentUser, setCurrentUser] = React.useState<string | null>(null);
   const [currentPage, setCurrentPage] = React.useState(1); // New state for pagination
+  const [expandedComments, setExpandedComments] = React.useState<Set<string>>(
+    new Set()
+  ); // State for expanded comments
 
   // UX States
   const [isLoadingComments, setIsLoadingComments] = React.useState(false);
@@ -126,10 +151,17 @@ const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
       setIsRegistering(false);
     }
   };
-
   const handleAddComment = async () => {
     if (newComment.trim() === "") {
       setFeedback({ message: "Please enter a comment.", type: "error" });
+      return;
+    }
+    const wordCount = countWords(newComment);
+    if (wordCount > 750) {
+      setFeedback({
+        message: `Comment is too long. Please limit to 750 words (current: ${wordCount} words).`,
+        type: "error",
+      });
       return;
     }
     if (!currentUser) {
@@ -180,7 +212,6 @@ const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
       setDeletingCommentId(null);
     }
   };
-
   const formatDate = (timeObject: TimeObject) => {
     if (
       !timeObject ||
@@ -202,6 +233,18 @@ const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
       console.error("Error formatting date:", timeObject.Time, error);
       return "Error formatting date";
     }
+  };
+
+  const toggleCommentExpansion = (commentId: string) => {
+    setExpandedComments((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(commentId)) {
+        newSet.delete(commentId);
+      } else {
+        newSet.add(commentId);
+      }
+      return newSet;
+    });
   };
 
   // Pagination logic
@@ -318,21 +361,18 @@ const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
   return (
     <div className="comments-container">
       <h2>Comments</h2>
-
       {/* Main Feedback Message Display (for registration, loading errors, etc.) */}
       {feedback && (
         <div className={`feedback-message ${feedback.type}`}>
           {feedback.message}
         </div>
       )}
-
       {/* Toast Notification Display */}
       {toast && (
         <div key={toast.id} className={`toast-notification ${toast.type}`}>
           {toast.message}
         </div>
       )}
-
       {!currentUser && (
         <div className="register-section fade-in">
           <input
@@ -356,7 +396,6 @@ const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
           </button>
         </div>
       )}
-
       {/* Loading State for Comments */}
       {isLoadingComments ? (
         <div className="loading-comments-section">
@@ -373,28 +412,46 @@ const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
                     className="comment-item fade-in"
                     style={{ "--comment-index": index } as React.CSSProperties}
                   >
+                    {" "}
                     <div className="comment-header">
                       <span className="comment-user">{comment.user}</span>
                       <span className="comment-date">
                         {formatDate(comment.creationTime)}
                       </span>
                     </div>
-                    <div className="comment-text">{comment.comment}</div>
-                    {currentUser === comment.user && (
-                      <div
-                        style={{ display: "flex", justifyContent: "flex-end" }}
-                      >
-                        <button
-                          onClick={() => handleDeleteComment(comment.id)}
-                          className="delete-button"
-                          disabled={deletingCommentId === comment.id}
-                        >
-                          {deletingCommentId === comment.id ? (
-                            <span className="spinner-small"></span>
-                          ) : (
-                            "X"
-                          )}
-                        </button>
+                    <div className="comment-text">
+                      {expandedComments.has(comment.id)
+                        ? comment.comment
+                        : needsTruncation(comment.comment)
+                        ? truncateText(comment.comment)
+                        : comment.comment}
+                    </div>{" "}
+                    {(needsTruncation(comment.comment) ||
+                      currentUser === comment.user) && (
+                      <div className="comment-actions">
+                        {needsTruncation(comment.comment) && (
+                          <button
+                            onClick={() => toggleCommentExpansion(comment.id)}
+                            className="read-more-button"
+                          >
+                            {expandedComments.has(comment.id)
+                              ? "Read less"
+                              : "Read more"}
+                          </button>
+                        )}
+                        {currentUser === comment.user && (
+                          <button
+                            onClick={() => handleDeleteComment(comment.id)}
+                            className="delete-button"
+                            disabled={deletingCommentId === comment.id}
+                          >
+                            {deletingCommentId === comment.id ? (
+                              <span className="spinner-small"></span>
+                            ) : (
+                              "X"
+                            )}
+                          </button>
+                        )}
                       </div>
                     )}
                   </div>
@@ -406,7 +463,6 @@ const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
           }
         </div>
       )}
-
       {/* Pagination Controls */}
       {comments.length > COMMENTS_PER_PAGE && (
         <div className="pagination-controls">
@@ -426,8 +482,7 @@ const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
             Next
           </button>
         </div>
-      )}
-
+      )}{" "}
       {currentUser && (
         <div className="add-comment-section fade-in">
           <textarea
@@ -437,13 +492,30 @@ const Comments: React.FC<CommentsProps> = ({ crunchy_id }: CommentsProps) => {
             className="comment-textarea"
             disabled={isAddingComment}
           />
-          <button
-            onClick={handleAddComment}
-            className="send-button"
-            disabled={isAddingComment}
-          >
-            {isAddingComment ? <span className="spinner-small"></span> : "Send"}
-          </button>
+          <div className="comment-actions">
+            <div className="word-counter">
+              <span
+                className={
+                  countWords(newComment) > 750
+                    ? "word-count-error"
+                    : "word-count"
+                }
+              >
+                {countWords(newComment)}/750 words
+              </span>
+            </div>
+            <button
+              onClick={handleAddComment}
+              className="send-button"
+              disabled={isAddingComment}
+            >
+              {isAddingComment ? (
+                <span className="spinner-small"></span>
+              ) : (
+                "Send"
+              )}
+            </button>
+          </div>
         </div>
       )}
     </div>
